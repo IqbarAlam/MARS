@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
+    <title>Mars Land Purchase Site</title>
+
+    <style>
+        * {
+            font-family: 'Gowun Batang', serif;
+            color: white;
+        }
+
+        body {
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://c4.wallpaperflare.com/wallpaper/495/255/780/mars-planet-surface-universe-space-wallpaper-preview.jpg');
+            background-position: center;
+            background-size: cover;
+        }
+
+        h1 {
+            font-weight: bold;
+        }
+
+        .order {
+            width: 500px;
+            margin: 30px auto 0px auto;
+            padding-bottom: 60px;
+        }
+
+        .mybtn {
+            width: 100%;
+        }
+
+        .order>table {
+            margin: 40px 0;
+            font-size: 18px;
+        }
+
+        option {
+            color: rgb(0, 0, 0);
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_order();
+        });
+
+        function show_order() {
+            $.ajax({
+                type: 'GET',
+                url: '/mars',
+                data: {},
+                success: function (response) {
+                    $('#orders').empty()
+                    let orders = response['orders'];
+                    for (let i = 0; i < orders.length; i++) {
+                        let name = orders[i]['name'];
+                        let address = orders[i]['address'];
+                        let size = orders[i]['size'];
+                        let temp = `
+                        <tr>
+                            <td>${name}</td>
+                            <td>${address}</td>
+                            <td>${size}</td>
+                        </tr>
+                        `;
+                        $('#orders').append(temp)
+                    }
+                }
+            });
+        }
+
+        function save_order() {
+            customer_name = $('#name').val()
+            address = $('#address').val()
+            land_size = $('#size').val()
+            $.ajax({
+                type: 'POST',
+                url: '/mars',
+                data: {
+                    'name': customer_name,
+                    'address': address,
+                    'size': land_size
+                },
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="https://github.com/PolyLvst">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                 PolyLvst
+            </a>
+        </div>
+    </nav>
+    <div class="order">
+        <h1>Buy Martian Land!</h1>
+        <h3>Price: $1.00 / acre</h3>
+        <p>
+            Did you know you could buy Martian land?<br /> This chance won't come again!
+        </p>
+        <div class="order-info">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Name</span>
+                <input id="name" type="text" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Address</span>
+                <input id="address" type="text" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="size">Acres</label>
+                <select class="form-select" id="size">
+                    <option selected>-- Select acreage --</option>
+                    <option value="10">10 acres</option>
+                    <option value="20">20 acres</option>
+                    <option value="30">30 acres</option>
+                    <option value="40">40 acres</option>
+                    <option value="50">50 acres</option>
+                </select>
+            </div>
+            <button onclick="save_order()" type="button" class="btn btn-warning mybtn">Create order</button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Acres</th>
+                </tr>
+            </thead>
+            <tbody id="orders">
+                <tr>
+                    <td>Jim</td>
+                    <td>100 Downing St.</td>
+                    <td>20 acres</td>
+                </tr>
+                <tr>
+                    <td>Bob</td>
+                    <td>856 Peterson Ave.</td>
+                    <td>10 acres</td>
+                </tr>
+                <tr>
+                    <td>Steve</td>
+                    <td>212 Baker St.</td>
+                    <td>30 acres</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
